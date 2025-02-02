@@ -32,6 +32,12 @@ function startGame() {
     });
 }
 
+function replayCurrentAudio() {
+    if (currentQuestions[currentQuestion]) {
+        playAudio(currentQuestions[currentQuestion].audio);
+    }
+}
+
 function getRandomQuestions(count) {
     return [...questions].sort(() => 0.5 - Math.random()).slice(0, count);
 }
@@ -153,11 +159,14 @@ function restartGame() {
     selectedOption = 0;
     correctAnswers = 0;
     checkButtonClicked = false;
-    currentQuestions = getRandomQuestions(5); // Muutettu 5 kysymykseen
+    currentQuestions = getRandomQuestions(5);
     
     const questionContainer = document.getElementById('question-container');
     questionContainer.innerHTML = `
         <h2>VALITSE OIKEA KUVA:</h2>
+        <button id="replay-sound" class="replay-button">
+            <img src="kaiutin.png" alt="Toista ääni">
+        </button>
         <div class="options">
             <img id="option1" class="option" onclick="selectOption(1)">
             <img id="option2" class="option" onclick="selectOption(2)">
@@ -171,6 +180,7 @@ function restartGame() {
     
     document.getElementById('stars-container').innerHTML = '';
     document.getElementById('stars-container').style.display = 'block';
+    document.getElementById('replay-sound').addEventListener('click', replayCurrentAudio);
     
     loadQuestion();
     playAudio('valitse.mp3', () => { // Vaihdettu kuka.mp3 -> valitse.mp3
@@ -197,6 +207,8 @@ function playAudio(src, callback) {
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('start-button').addEventListener('click', startGame);
+
+    document.getElementById('replay-sound').addEventListener('click', replayCurrentAudio);  // Tämä rivi lisätään
 
     document.addEventListener('keydown', (event) => {
         if (event.key === 'ArrowRight' && document.getElementById('next-arrow').style.display !== 'none') {
